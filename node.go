@@ -14,25 +14,37 @@ type Edge struct {
 
 type Node struct {
     Data int
+    Visited bool
     Edges []*Edge
+}
+
+
+
+// Should be a function of a Graph struct
+func dfs(node *Node, data int, visited map[*Node]bool) *Node {
+    for _, edge := range node.Edges {
+        _, found := visited[node]
+        if found {
+            fmt.Println("Node visited")
+            continue
+        }
+        if data == node.Data {
+            fmt.Println("Node found!")
+            return node
+        }
+        visited[node] = true
+        node_dest := node.GetDest(edge)
+        node_dest.print()
+        return dfs(node_dest, data, visited)
+    }
+    fmt.Println("Node Not found!")
+    return node
 }
 
 
 func Dfs(node *Node, data int) *Node {
     visited := make(map[*Node]bool)
-    for _, edge := range node.Edges {
-        if data == node.Data {
-            return node
-        }
-        _, found := visited[node]
-        if found {
-            continue
-        }
-        visited[node] = true
-        node_dest := node.GetDest(edge)
-        return Dfs(node_dest, data)
-    }
-    return node
+    return dfs(node, data, visited)
 }
 
 
@@ -52,10 +64,10 @@ func (node_src *Node) Connect(node_dest *Node, weight float64) {
 }
 
 
-func (node *Node) Print() {
+func (node *Node) print() {
     fmt.Println("Data:", node.Data)
     for i, edge := range node.Edges {
-        fmt.Printf("Edge Weight %d: %f\n", i, edge.Weight)
+        fmt.Printf("Edge %d weight: %f\n", i, edge.Weight)
     }
 }
 

@@ -15,8 +15,8 @@ func main() {
     }
 
 
-    node1.Print()
-    node2.Print()
+    node1.print()
+    node2.print()
 
     for _, edge := range node1.Edges {
         edge.Node_src.Print()
