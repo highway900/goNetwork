@@ -19,26 +19,22 @@ type Node struct {
 }
 
 
-
 // Should be a function of a Graph struct
 func dfs(node *Node, data int, visited map[*Node]bool) *Node {
-    for _, edge := range node.Edges {
-        _, found := visited[node]
-        if found {
-            fmt.Println("Node visited")
-            continue
-        }
-        if data == node.Data {
-            fmt.Println("Node found!")
-            return node
-        }
+    node.print(false)
+    // Check the node has been visited
+    if node.Data == data {
+        return node
+    } else {
         visited[node] = true
-        node_dest := node.GetDest(edge)
-        node_dest.print()
-        return dfs(node_dest, data, visited)
+        for _, edge := range node.Edges {
+            node_dest := node.GetDest(edge)
+            if !visited[node_dest] {
+                return dfs(node_dest, data, visited)
+            }
+        }
     }
-    fmt.Println("Node Not found!")
-    return node
+    return nil
 }
 
 
@@ -64,10 +60,12 @@ func (node_src *Node) Connect(node_dest *Node, weight float64) {
 }
 
 
-func (node *Node) print() {
+func (node *Node) print(edge bool) {
     fmt.Println("Data:", node.Data)
-    for i, edge := range node.Edges {
-        fmt.Printf("Edge %d weight: %f\n", i, edge.Weight)
+    if edge {
+        for i, edge := range node.Edges {
+            fmt.Printf("Edge %d weight: %f\n", i, edge.Weight)
+        }
     }
 }
 

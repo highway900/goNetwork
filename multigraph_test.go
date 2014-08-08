@@ -27,7 +27,7 @@ func TestMultiGraphCreate(t *testing.T) {
 
     node1.Connect(node2, 1.0)
     node2.Connect(node1, 2.0)
-    node1.print()
+    node1.print(true)
 
 }
 
@@ -40,18 +40,28 @@ func TestDfsMultiGraph(t *testing.T) {
     node1 := &Node{Data: 1}
     node2 := &Node{Data: 2}
     node3 := &Node{Data: 3}
-    //node4 := &Node{Data: 4}
+    node4 := &Node{Data: 4}
     //node5 := &Node{Data: 5}
 
     node1.Connect(node2, 1.0)
-    node1.Connect(node3, 2.0)
-    //node3.Connect(node2, 3.0)
-    //node4.Connect(node3, 4.0)
+    node1.Connect(node3, 1.0)
+
+    node2.Connect(node4, 1.0)
+    node3.Connect(node4, 1.0)
     //node5.Connect(node1, 5.0)
     //node5.Connect(node3, 6.0)
 
+    for _, e := range node1.Edges {
+        fmt.Println(node1.GetDest(e))
+    }
 
-    node := Dfs(node1, 3)
-    node.print()
+
+    n := Dfs(node1, 4)
+    if n != nil {
+        fmt.Println("---Success---")
+        n.print(true)
+    } else {
+        fmt.Println("Failed")
+    }
 
 }
