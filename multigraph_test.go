@@ -10,9 +10,9 @@ import (
 var seed int64
 
 
-func SetupTest(s string) {
+func SetupTest(s string, t ...int) {
 
-    fmt.Printf("\n==================\nTesting: %s\n................\n\n", s)
+    fmt.Printf("\n================\nTesting: %s\n................\n\n", s)
 
 }
 
@@ -23,15 +23,25 @@ func TestMultiGraphCreate(t *testing.T) {
     // create a node
     node1 := &Node{Data: 1}
     node2 := &Node{Data: 2}
+    node3 := &Node{Data: 3}
 
+    graph := &Graph{
+        Visited: make(map[*Node]bool),
+    }
 
-    node1.Connect(node2, 1.0)
-    node2.Connect(node1, 2.0)
-    node1.print(true)
+    graph.Connect(node1, node2, 1.0, "k")
+    graph.Connect(node1, node3, 1.0, "k")
+
+    fmt.Println(len(node1.Edges))
+    node1.Print(true, true)
 
 }
 
-
+func printKV(r VisitMap) {
+    for k, v := range r {
+        fmt.Println(k.Data, v)
+    }
+}
 func TestDfsMultiGraph(t *testing.T) {
 
     SetupTest("DFS")
@@ -41,25 +51,31 @@ func TestDfsMultiGraph(t *testing.T) {
     node2 := &Node{Data: 2}
     node3 := &Node{Data: 3}
     node4 := &Node{Data: 4}
-    //node5 := &Node{Data: 5}
+    node5 := &Node{Data: 5}
+    node6 := &Node{Data: 6}
 
-    node1.Connect(node2, 1.0)
-    node1.Connect(node3, 1.0)
-
-    node2.Connect(node4, 1.0)
-    node3.Connect(node4, 1.0)
-    //node5.Connect(node1, 5.0)
-    //node5.Connect(node3, 6.0)
-
-    for _, e := range node1.Edges {
-        fmt.Println(node1.GetDest(e))
+    graph := &Graph{
+        Visited: make(map[*Node]bool),
     }
 
+    graph.Connect(node1, node2, 1.0, "k")
+    graph.Connect(node1, node3, 1.0, "k")
 
-    n := Dfs(node1, 4)
+    graph.Connect(node2, node4, 1.0, "k")
+    graph.Connect(node3, node4, 1.0, "k")
+    graph.Connect(node5, node4, 1.0, "k")
+    graph.Connect(node1, node6, 1.0, "k")
+    graph.Connect(node6, node5, 1.0, "k")
+
+
+    n := graph.Dfs(node6)
+    m := graph.Dfs_(node5)
     if n != nil {
         fmt.Println("---Success---")
-        n.print(true)
+        fmt.Println("---Looped DFS---")
+        printKV(n)
+        fmt.Println("---Recursive DFS---")
+        printKV(m)
     } else {
         fmt.Println("Failed")
     }

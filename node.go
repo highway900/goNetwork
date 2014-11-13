@@ -5,78 +5,102 @@ import (
 )
 
 
+
+type Graph struct {
+    Edges []*Edge
+    Nodes []*Node
+    Visited VisitMap
+}
+
+
 type Edge struct {
     Node_src *Node
     Node_dest *Node
     Weight float64
+    Key string
 }
 
 
 type Node struct {
     Data int
-    Visited bool
     Edges []*Edge
 }
 
 
-// Should be a function of a Graph struct
-func dfs(node *Node, data int, visited map[*Node]bool) *Node {
-    node.print(false)
-    // Check the node has been visited
-    if node.Data == data {
-        return node
-    } else {
-        visited[node] = true
-        for _, edge := range node.Edges {
-            node_dest := node.GetDest(edge)
-            if !visited[node_dest] {
-                return dfs(node_dest, data, visited)
+// Loop Version
+func (g *Graph) Dfs(start *Node) VisitMap {
+    stack := new(Stack)
+    stack.Push(start)
+    for stack.Len() > 0 {
+        node := stack.Pop().(*Node)
+        if !g.Visited[node] {
+            g.Visited[node] = true
+            for _, outNode := range start.OutNodes() {
+                if !g.Visited[outNode] {
+                    stack.Push(outNode)
+                }
             }
         }
     }
+    return g.Visited
+}
+
+
+// Recursive version
+func (g *Graph) Dfs_(start *Node) VisitMap {
+    g.Visited[start] = true
+    for _, node := range start.OutNodes() {
+        if !g.Visited[node] {
+            g.Dfs_(node)
+        }
+    }
+    return g.Visited
+}
+
+
+func _dfs_path(graph *Graph, start *Node, goal *Node, path VisitMap) VisitMap {
     return nil
 }
 
 
-func Dfs(node *Node, data int) *Node {
-    visited := make(map[*Node]bool)
-    return dfs(node, data, visited)
-}
-
-
-func (node_src *Node) Connect(node_dest *Node, weight float64) {
+func (graph *Graph) Connect(node_src *Node, node_dest *Node, weight float64, key string) {
 
     edge := &Edge{
         node_src,
         node_dest,
         weight,
+        key,
     }
 
-    // Allocating before might be a better way
-    // of handling this. A good test for profiling.
     node_src.Edges = append(node_src.Edges, edge)
     node_dest.Edges = append(node_dest.Edges, edge)
 
+    graph.Edges = append(graph.Edges, edge)
+    graph.Nodes = append(graph.Nodes, node_src, node_dest)
+
 }
 
 
-func (node *Node) print(edge bool) {
+func (node *Node) Print(edges bool, adjacent bool) {
     fmt.Println("Data:", node.Data)
-    if edge {
-        for i, edge := range node.Edges {
+    for i, edge := range node.Edges {
+        if adjacent {
+            fmt.Printf("Adjacent ---> %d\n", node.GetDest(edge).Data)
+        }
+        if edges {
             fmt.Printf("Edge %d weight: %f\n", i, edge.Weight)
         }
     }
+    fmt.Printf("\n")
 }
 
 
-func MakeEdge(src *Node, dest *Node, weight float64) {
-
-    edge := &Edge{}
-    edge.Node_src = src
-    edge.Node_dest = dest
-    edge.Weight = weight
-
+func (node *Node) OutNodes() []*Node {
+    outNodes := make([]*Node, len(node.Edges))
+    for i, edge := range node.Edges {
+        outNodes[i] = node.GetDest(edge)
+    }
+    return outNodes
 }
 
 
