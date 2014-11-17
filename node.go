@@ -4,12 +4,38 @@ import (
     "fmt"
 )
 
+type SizedArray struct {
+    items []interface{}
+    current int // Array is filled to here
+}
+
+func MakeSizedArray() SizedArray {
+    return SizedArray {
+        make([]interface{}, 1),
+        0,
+    }
+}
+
+// returns the last item in the array
+func (sa *SizedArray) Last() interface{} {
+    return sa.items[sa.current]
+}
+
+// pushes the item onto the array at the back
+func (sa *SizedArray) PushBack(item interface{}) {
+    sa.items[sa.current] = item
+    sa.current += 1
+}
+
+
+type VisitMap map[*Node]bool
 
 
 type Graph struct {
     Edges []*Edge
     Nodes []*Node
     Visited VisitMap
+    VisitOrder SizedArray
 }
 
 
@@ -24,6 +50,13 @@ type Edge struct {
 type Node struct {
     Data int
     Edges []*Edge
+}
+
+
+func (g *Graph) AddNode(data int) *Node {
+    node := &Node{Data: data}
+    g.Nodes = append(g.Nodes, node)
+    return node
 }
 
 
@@ -47,15 +80,18 @@ func (g *Graph) Dfs(start *Node) VisitMap {
 
 
 // Recursive version
-func (g *Graph) Dfs_(start *Node) VisitMap {
+func (g *Graph) Dfs_(start *Node) SizedArray {
     g.Visited[start] = true
+    g.VisitOrder.PushBack(start)
     for _, node := range start.OutNodes() {
         if !g.Visited[node] {
+            fmt.Println(node, "add")
             g.Dfs_(node)
         }
     }
-    return g.Visited
+    return g.VisitOrder
 }
+
 
 
 func _dfs_path(graph *Graph, start *Node, goal *Node, path VisitMap) VisitMap {
@@ -76,7 +112,6 @@ func (graph *Graph) Connect(node_src *Node, node_dest *Node, weight float64, key
     node_dest.Edges = append(node_dest.Edges, edge)
 
     graph.Edges = append(graph.Edges, edge)
-    graph.Nodes = append(graph.Nodes, node_src, node_dest)
 
 }
 

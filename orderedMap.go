@@ -1,19 +1,16 @@
 package goNetwork
 
 type OrderedMap struct {
-    m map[*interface{}]interface{}
-    order []*interface{}
+    m map[interface{}]interface{}
+    order []interface{}
 }
 
-func (o *OrderedMap) Set(key *interface{}, val interface{}) {
-    if o.order == nil {
-        o.order := []*interface{}
-    }
+func (o *OrderedMap) Set(key interface{}, val interface{}) {
     o.order = append(o.order, key)
     o.m[key] = val
 }
 
-func (o *OrderedMap) Iter() <-chan interface{} {
+func (o *OrderedMap) Iter() <-chan struct {Key, Val interface{}} {
     ch := make(chan struct {Key, Val interface{}})
     go func() {
         for _, key := range o.order {
