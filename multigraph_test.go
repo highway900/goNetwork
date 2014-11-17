@@ -83,18 +83,14 @@ func TestDfsMultiGraph(t *testing.T) {
 
     graph := SetupTest("DFS")
 
-    n := graph.Dfs(graph.Nodes[0])
+    //n := graph.Dfs(graph.Nodes[0])
     graph.VisitOrder.items = make([]interface{}, len(graph.Nodes))
     m := graph.Dfs_(graph.Nodes[5])
-    fmt.Println(m.items[5])
+    fmt.Println("visit order items", m.items[5])
     graph.Nodes[0].Print(false, false)
-    if n != nil {
-        fmt.Println("---Success---")
-        fmt.Println("---Looped DFS---")
-        fmt.Println("---Recursive DFS---")
-        printKV(m.items)
-    } else {
-        fmt.Println("Failed")
-    }
+    fmt.Println("---Success---")
+    fmt.Println("---Looped DFS---")
+    fmt.Println("---Recursive DFS---")
+    printKV(m.items)
 
 }
