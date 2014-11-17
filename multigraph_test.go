@@ -63,7 +63,7 @@ func TestMultiGraphCreate(t *testing.T) {
 
 func printKV(r []interface{}) {
     for _, v := range r {
-        fmt.Println(v)
+        fmt.Println(v.(*Node).Data)
     }
 }
 
@@ -71,9 +71,8 @@ func printKV(r []interface{}) {
 func TestGraphOutNodes(t *testing.T) {
     graph := SetupTest("OutNodes")
     for _, node := range graph.Nodes {
-        node.Print(false, false)
         for _, n := range node.OutNodes() {
-            fmt.Println("OutNodes --> ", n)
+            fmt.Printf("%d --> %d\n", node.Data, n.Data)
         }
     }
 }
@@ -83,14 +82,10 @@ func TestDfsMultiGraph(t *testing.T) {
 
     graph := SetupTest("DFS")
 
-    //n := graph.Dfs(graph.Nodes[0])
     graph.VisitOrder.items = make([]interface{}, len(graph.Nodes))
     m := graph.Dfs_(graph.Nodes[5])
-    fmt.Println("visit order items", m.items[5])
-    graph.Nodes[0].Print(false, false)
+    fmt.Println("visit order items", m.items)
     fmt.Println("---Success---")
-    fmt.Println("---Looped DFS---")
     fmt.Println("---Recursive DFS---")
     printKV(m.items)
-
 }

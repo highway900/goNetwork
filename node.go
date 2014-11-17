@@ -59,33 +59,12 @@ func (g *Graph) AddNode(data int) *Node {
     return node
 }
 
-
-// Loop Version
-func (g *Graph) Dfs(start *Node) VisitMap {
-    stack := new(Stack)
-    stack.Push(start)
-    for stack.Len() > 0 {
-        node := stack.Pop().(*Node)
-        if !g.Visited[node] {
-            g.Visited[node] = true
-            for _, outNode := range start.OutNodes() {
-                if !g.Visited[outNode] {
-                    stack.Push(outNode)
-                }
-            }
-        }
-    }
-    return g.Visited
-}
-
-
 // Recursive version
 func (g *Graph) Dfs_(start *Node) SizedArray {
     g.Visited[start] = true
     g.VisitOrder.PushBack(start)
     for _, node := range start.OutNodes() {
         if !g.Visited[node] {
-            fmt.Println(node, "add")
             g.Dfs_(node)
         }
     }
