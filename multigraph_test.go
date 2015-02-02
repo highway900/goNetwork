@@ -14,10 +14,7 @@ func SetupTest(s string) *Graph {
 
     fmt.Printf("\n================\nTesting: %s\n................\n\n", s)
 
-    graph := &Graph{
-        Visited: make(map[*Node]bool),
-        VisitOrder: MakeSizedArray(),
-    }
+    graph := new(Graph)
 
     // create a node
     node1 := graph.AddNode(1)
@@ -26,6 +23,7 @@ func SetupTest(s string) *Graph {
     node4 := graph.AddNode(4)
     node5 := graph.AddNode(5)
     node6 := graph.AddNode(6)
+    node7 := graph.AddNode(7)
 
     graph.Connect(node1, node2, 1.0, "k")
     graph.Connect(node1, node3, 1.0, "k")
@@ -35,6 +33,7 @@ func SetupTest(s string) *Graph {
     graph.Connect(node5, node4, 1.0, "k")
     graph.Connect(node1, node6, 1.0, "k")
     graph.Connect(node6, node5, 1.0, "k")
+    graph.Connect(node6, node7, 1.0, "k")
 
     return graph
 
@@ -49,10 +48,7 @@ func TestMultiGraphCreate(t *testing.T) {
     node2 := &Node{Data: 2}
     node3 := &Node{Data: 3}
 
-    graph := &Graph{
-        Visited: make(map[*Node]bool),
-    }
-
+    graph := new(Graph)
     graph.Connect(node1, node2, 1.0, "k")
     graph.Connect(node1, node3, 1.0, "k")
 
@@ -79,13 +75,19 @@ func TestGraphOutNodes(t *testing.T) {
 
 
 func TestDfsMultiGraph(t *testing.T) {
+    graph := SetupTest("DFS Recursive")
 
-    graph := SetupTest("DFS")
-
-    graph.VisitOrder.items = make([]interface{}, len(graph.Nodes))
-    m := graph.Dfs_(graph.Nodes[5])
+    m := graph.Dfs(graph.Nodes[5])
     fmt.Println("visit order items", m.items)
-    fmt.Println("---Success---")
-    fmt.Println("---Recursive DFS---")
-    printKV(m.items)
+    // Compare the m.items to graph.Nodes both should contain the same items.
+    should_be_empty := m.items
+    fmt.Println(should_be_empty)
+    for x, i := range m.items {
+        for _, j := range graph.Nodes {
+            if i == j {
+                should_be_empty = should_be_empty[1:]
+            }
+        }
+    }
+    fmt.Println(should_be_empty)
 }
