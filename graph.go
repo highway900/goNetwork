@@ -62,12 +62,12 @@ type Edge struct {
 
 
 type Node struct {
-    Data int
+    Data interface{}
     Edges []*Edge
 }
 
 
-func (g *Graph) AddNode(data int) *Node {
+func (g *Graph) AddNode(data interface{}) *Node {
     node := &Node{Data: data}
     g.Nodes = append(g.Nodes, node)
     return node
