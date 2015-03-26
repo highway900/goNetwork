@@ -1,8 +1,5 @@
 package goNetwork
 
-import (
-    "fmt"
-)
 
 type SizedArray struct {
     items []interface{}
@@ -48,22 +45,8 @@ func MakeVisitor(size int) *Visitor {
 
 
 type Graph struct {
-    Edges []*Edge
-    Nodes []*Node
-}
-
-
-type Edge struct {
-    Node_src *Node
-    Node_dest *Node
-    Weight float64
-    Key string
-}
-
-
-type Node struct {
-    Data interface{}
-    Edges []*Edge
+    Edges []IEdge
+    Nodes []INode
 }
 
 
@@ -113,55 +96,16 @@ func (g *Graph) dfsPath(start *Node, goal *Node, visitor *Visitor) SizedArray {
 }
 
 
-func (graph *Graph) Connect(node_src *Node, node_dest *Node, weight float64, key string) {
+func (graph *Graph) Connect(n0 INode, n1 INode, weight float64, key string) {
     edge := &Edge{
-        node_src,
-        node_dest,
+        n0,
+        n1,
         weight,
         key,
     }
 
-    node_src.Edges = append(node_src.Edges, edge)
-    node_dest.Edges = append(node_dest.Edges, edge)
+    n0.Edges = append(n0.Edges, edge)
+    n1.Edges = append(n1.Edges, edge)
 
     graph.Edges = append(graph.Edges, edge)
-}
-
-
-func (node *Node) Print(edges bool, adjacent bool) {
-    fmt.Println("Data:", node.Data)
-    for i, edge := range node.Edges {
-        if adjacent {
-            fmt.Printf("Adjacent ---> %d\n", node.GetDest(edge).Data)
-        }
-        if edges {
-            fmt.Printf("Edge %d weight: %f\n", i, edge.Weight)
-        }
-    }
-    fmt.Printf("\n")
-}
-
-
-func (node *Node) OutNodes() []*Node {
-    outNodes := make([]*Node, len(node.Edges))
-    for i, edge := range node.Edges {
-        outNodes[i] = node.GetDest(edge)
-    }
-    return outNodes
-}
-
-
-// This is not directed
-// Would need to use parent Graph object to handle a graph type system
-func (node *Node) GetDest(edge *Edge) *Node {
-    if node == edge.Node_dest {
-        return edge.Node_src
-    } else {
-        return edge.Node_dest
-    }
-}
-
-
-func (edge *Edge) Print() {
-    fmt.Println(edge.Weight)
 }
