@@ -50,7 +50,7 @@ type Graph struct {
 }
 
 
-func (g *Graph) AddNode(data interface{}) *Node {
+func (g *Graph) AddNode(data interface{}) INode {
     node := &Node{Data: data}
     g.Nodes = append(g.Nodes, node)
     return node
@@ -96,16 +96,17 @@ func (g *Graph) dfsPath(start *Node, goal *Node, visitor *Visitor) SizedArray {
 }
 
 
-func (graph *Graph) Connect(n0 INode, n1 INode, weight float64, key string) {
+func (graph *Graph) Connect(n0 INode, n1 INode, weight float64, id string, key string) {
     edge := &Edge{
         n0,
         n1,
         weight,
+        id,
         key,
     }
 
-    n0.Edges = append(n0.Edges, edge)
-    n1.Edges = append(n1.Edges, edge)
+    n0.Connect(edge)
+    n1.Connect(edge)
 
     graph.Edges = append(graph.Edges, edge)
 }

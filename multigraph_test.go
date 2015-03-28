@@ -25,15 +25,15 @@ func SetupTest(s string) *Graph {
     node6 := graph.AddNode(6)
     node7 := graph.AddNode(7)
 
-    graph.Connect(node1, node2, 1.0, "k")
-    graph.Connect(node1, node3, 1.0, "k")
+    graph.Connect(node1, node2, 1.0, "i", "k")
+    graph.Connect(node1, node3, 1.0, "i", "k")
 
-    graph.Connect(node2, node4, 1.0, "k")
-    graph.Connect(node3, node4, 1.0, "k")
-    graph.Connect(node5, node4, 1.0, "k")
-    graph.Connect(node1, node6, 1.0, "k")
-    graph.Connect(node6, node5, 1.0, "k")
-    graph.Connect(node6, node7, 1.0, "k")
+    graph.Connect(node2, node4, 1.0, "i", "k")
+    graph.Connect(node3, node4, 1.0, "i", "k")
+    graph.Connect(node5, node4, 1.0, "i", "k")
+    graph.Connect(node1, node6, 1.0, "i", "k")
+    graph.Connect(node6, node5, 1.0, "i", "k")
+    graph.Connect(node6, node7, 1.0, "i", "k")
 
     return graph
 
@@ -49,10 +49,10 @@ func TestMultiGraphCreate(t *testing.T) {
     node3 := &Node{Data: 3}
 
     graph := new(Graph)
-    graph.Connect(node1, node2, 1.0, "k")
-    graph.Connect(node1, node3, 1.0, "k")
+    graph.Connect(node1, node2, 1.0, "i", "k")
+    graph.Connect(node1, node3, 1.0, "i", "k")
 
-    node1.Print(true, true)
+    node1.Print()
 
 }
 
@@ -67,8 +67,8 @@ func printKV(r []interface{}) {
 func TestGraphOutNodes(t *testing.T) {
     graph := SetupTest("OutNodes")
     for _, node := range graph.Nodes {
-        for _, n := range node.OutNodes() {
-            fmt.Printf("%d --> %d\n", node.Data, n.Data)
+        for _, n := range node.(*Node).OutNodes() {
+            fmt.Printf("%d --> %d\n", node.(*Node).Data, n.Data)
         }
     }
 }
@@ -77,12 +77,12 @@ func TestGraphOutNodes(t *testing.T) {
 func TestDfsMultiGraph(t *testing.T) {
     graph := SetupTest("DFS Recursive")
 
-    m := graph.Dfs(graph.Nodes[5])
+    m := graph.Dfs(graph.Nodes[5].(*Node))
     fmt.Println("visit order items", m.items)
     // Compare the m.items to graph.Nodes both should contain the same items.
     should_be_empty := m.items
     fmt.Println(should_be_empty)
-    for x, i := range m.items {
+    for _, i := range m.items {
         for _, j := range graph.Nodes {
             if i == j {
                 should_be_empty = should_be_empty[1:]

@@ -8,8 +8,8 @@ import (
 type IEdge interface {
     ID() string
     Weight() float64
-    N0() *INode
-    N1() *INode
+    N0() INode
+    N1() INode
 }
 
 
@@ -32,12 +32,12 @@ func (e *Edge) Weight() float64 {
 }
 
 
-func (e *Edge) N0() *INode {
+func (e *Edge) N0() INode {
     return e.n0
 }
 
 
-func (e *Edge) N1() *INode {
+func (e *Edge) N1() INode {
     return e.n1
 }
 
