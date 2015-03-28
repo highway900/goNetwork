@@ -74,14 +74,15 @@ type Edge struct {
 }
 
 type Node struct {
-	Data  int
-	Edges []*Edge
+    Data interface{}
+    Edges []*Edge
 }
 
-func (g *Graph) AddNode(data int) *Node {
-	node := &Node{Data: data}
-	g.Nodes = append(g.Nodes, node)
-	return node
+
+func (g *Graph) AddNode(data interface{}) *Node {
+    node := &Node{Data: data}
+    g.Nodes = append(g.Nodes, node)
+    return node
 }
 
 func (g *Graph) Dfs(start *Node) SizedArray {
